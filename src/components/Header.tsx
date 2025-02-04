@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Heart, Search, LogOut } from "lucide-react";
+import { Heart, PawPrint, LogOut } from "lucide-react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
@@ -40,20 +40,48 @@ export function Header() {
             <nav className="flex items-center space-x-4">
               <Link
                 href="/search/1"
-                className="flex items-center space-x-2 hover:text-gray-600"
+                className="flex items-center space-x-1 hover:text-gray-600"
               >
-                <Search className="h-4 w-4" />
-                <span>Browse</span>
+                <PawPrint
+                  className={`h-4 w-4 ${
+                    pathname.includes("/search")
+                      ? "text-orange-500"
+                      : "text-gray-600"
+                  }`}
+                />
+                <span
+                  className={`${
+                    pathname.includes("/search")
+                      ? "text-orange-500"
+                      : "text-gray-600"
+                  }`}
+                >
+                  Browse
+                </span>
               </Link>
               <Link
                 href="/favorites"
-                className="flex items-center space-x-2 hover:text-gray-600"
+                className="flex items-center space-x-1 hover:text-gray-600"
               >
-                <Heart className="h-4 w-4" />
-                <span>Favorites</span>
+                <Heart
+                  className={`h-4 w-4 ${
+                    pathname.includes("/favorites")
+                      ? "text-orange-500"
+                      : "text-gray-600"
+                  }`}
+                />
+                <span
+                  className={`${
+                    pathname.includes("/favorites")
+                      ? "text-orange-500"
+                      : "text-gray-600"
+                  }`}
+                >
+                  Favorites
+                </span>
               </Link>
               <button
-                className="flex items-center space-x-2 hover:text-gray-600"
+                className="flex items-center space-x-1 hover:text-gray-600"
                 onClick={handleLogout}
               >
                 <LogOut className="h-4 w-4" />

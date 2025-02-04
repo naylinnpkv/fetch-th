@@ -31,7 +31,7 @@ export default function DogList({ dogs }: DogListProps) {
       {dogs.map((dog) => (
         <Card
           key={dog.id}
-          className="w-64 flex flex-col border-2 border-gray-300 rounded-md shadow-md"
+          className="w-56 flex flex-col border-2 border-gray-300 rounded-md shadow-md"
         >
           <CardHeader className="flex-none">
             <CardTitle className="text-center truncate">{dog.name}</CardTitle>
