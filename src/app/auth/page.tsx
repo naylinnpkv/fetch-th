@@ -37,31 +37,34 @@ export default function Auth() {
     }
   };
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="flex flex-col items-center justify-center h-screen"
-    >
-      <input
-        type="text"
-        {...register("name")}
-        placeholder="name"
-        className="border-2 border-gray-300 rounded-full p-2 w-1/4"
-      />
-      {errors.name && (
-        <p className="text-red-500 text-sm">{`*${errors.name.message}`}</p>
-      )}
-      <input
-        type="text"
-        {...register("email")}
-        placeholder="email"
-        className="border-2 border-gray-300 rounded-full p-2 mt-2 w-1/4"
-      />
-      {errors.email && (
-        <p className="text-red-500 text-sm">{`*${errors.email.message}`}</p>
-      )}
-      <button className="bg-blue-500 text-white rounded-full p-2 mt-2 w-1/4">
-        Login
-      </button>
-    </form>
+    <div className="flex flex-col items-center justify-center h-screen">
+      <h1 className="text-2xl font-bold text-center mb-5">Sign in</h1>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="flex flex-col w-full justify-center items-center"
+      >
+        <input
+          type="text"
+          {...register("name")}
+          placeholder="name"
+          className="border-2 border-gray-300 rounded-full p-2 w-1/4"
+        />
+        {errors.name && (
+          <p className="text-red-500 text-sm">{`*${errors.name.message}`}</p>
+        )}
+        <input
+          type="text"
+          {...register("email")}
+          placeholder="email"
+          className="border-2 border-gray-300 rounded-full p-2 mt-2 w-1/4"
+        />
+        {errors.email && (
+          <p className="text-red-500 text-sm">{`*${errors.email.message}`}</p>
+        )}
+        <button className="bg-blue-500 text-white rounded-full p-2 mt-2 w-1/4">
+          Login
+        </button>
+      </form>
+    </div>
   );
 }

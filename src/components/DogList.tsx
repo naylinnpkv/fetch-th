@@ -31,12 +31,17 @@ export default function DogList({ dogs }: DogListProps) {
       {dogs.map((dog) => (
         <Card
           key={dog.id}
-          className="w-64 flex flex-col border-2 border-gray-300 rounded-md shadow-md"
+          className="w-56 flex flex-col border-2 border-gray-300 rounded-md shadow-md"
         >
           <CardHeader className="flex-none">
             <CardTitle className="text-center truncate">{dog.name}</CardTitle>
-            <CardDescription className="text-sm">
-              breed: <span className="font-bold">{dog.breed}</span>
+            <CardDescription className="text-sm flex flex-col">
+              <div className="flex flex-row">
+                Breed: <span className="font-bold">{dog.breed}</span>
+              </div>
+              <p className="text-sm text-gray-500 italic self-center">
+                Age: {dog.age}
+              </p>
             </CardDescription>
           </CardHeader>
           <CardContent className="flex-1 flex items-center justify-center p-4">
@@ -49,7 +54,9 @@ export default function DogList({ dogs }: DogListProps) {
             />
           </CardContent>
           <CardFooter className="flex gap-2 justify-between">
-            <p className="text-sm text-gray-500 italic">Age: {dog.age}</p>
+            <p className="text-sm text-gray-500 italic">
+              Zip Code: {dog.zip_code}
+            </p>
             <Heart
               size={24}
               fill={favoriteDogs.includes(dog.id) ? "red" : "none"}
