@@ -11,11 +11,13 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { toast } from "sonner";
 import DogList from "@/components/DogList";
 import Spinner from "@/components/ui/spinner";
 import Filter from "@/components/Filter";
 import useFilterStore from "@/store/useFilterStore";
-import { Button } from "./ui/button";
+import { useRouter } from "next/navigation";
+
 interface SearchProps {
   currentPage: number;
 }
@@ -24,35 +26,17 @@ export default function Search({ currentPage }: SearchProps) {
   const [dogs, setDogs] = useState<Dog[]>([]);
   const [totalPages, setTotalPages] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
-  const { breeds, minAge, maxAge } = useFilterStore();
+  const { buildQueryParams } = useFilterStore();
+  const router = useRouter();
   const size = 25;
-
-  useEffect(() => {
-    searchDogs();
-  }, []);
 
   const searchDogs = async () => {
     try {
       const from = (currentPage - 1) * size;
-      const queryParams = new URLSearchParams();
-
-      queryParams.append("size", size.toString());
-      queryParams.append("from", from.toString());
-
-      if (breeds.length > 0) {
-        queryParams.append("breeds", breeds.join(","));
-      }
-      if (minAge > 0) {
-        queryParams.append("ageMin", minAge.toString());
-      }
-      if (maxAge > 0) {
-        queryParams.append("ageMax", maxAge.toString());
-      }
-
+      const queryParams = buildQueryParams(size, from);
       const url = `https://frontend-take-home-service.fetch.com/dogs/search?${queryParams.toString()}`;
 
       setLoading(true);
-
       const searchResponse = await axios.get<{
         resultIds: string[];
         total: number;
@@ -72,24 +56,33 @@ export default function Search({ currentPage }: SearchProps) {
       );
 
       setDogs(postResponse.data);
-      setLoading(false);
     } catch (error) {
-      console.error("Error:", error);
+      if (axios.isAxiosError(error) && error.response) {
+        if (error.response.status === 401) {
+          router.push("/");
+          toast.error("You must be logged in to access this page");
+        } else {
+          console.error("Error fetching breeds:", error.response.data);
+        }
+      } else {
+        console.error("Unexpected error:", error);
+      }
+    } finally {
+      setLoading(false);
     }
   };
+
+  useEffect(() => {
+    searchDogs();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage]);
 
   if (loading) return <Spinner />;
   return (
     <>
-      <div className="flex justify-center items-center gap-2 my-4">
-        <Filter />
-        <Button
-          variant="outline"
-          className="bg-blue-500 text-white"
-          onClick={searchDogs}
-        >
-          Search
-        </Button>
+      <div className="flex flex-col w-full justify-end items-end">
+        <Filter onSubmit={searchDogs} />
       </div>
       <div className="flex flex-wrap gap-2 justify-center gap-y-5 mt-10 w-full mx-auto">
         <DogList dogs={dogs} />
