@@ -4,7 +4,7 @@ interface FilterStore {
   breeds: string[];
   minAge: number;
   maxAge: number;
-  sortField: "breed" | "age";
+  sortField: "breed" | "age" | "name";
   sortOrder: "asc" | "desc";
 
   setBreeds: (breeds: string[]) => void;
