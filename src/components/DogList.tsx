@@ -36,7 +36,7 @@ export default function DogList({ dogs }: DogListProps) {
           <CardHeader className="flex-none">
             <CardTitle className="text-center truncate">{dog.name}</CardTitle>
             <CardDescription className="text-sm">
-              breed: <span className="font-bold">{dog.breed}</span>
+              Breed: <span className="font-bold">{dog.breed}</span>
             </CardDescription>
           </CardHeader>
           <CardContent className="flex-1 flex items-center justify-center p-4">

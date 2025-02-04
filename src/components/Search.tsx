@@ -6,14 +6,16 @@ import { Dog } from "@/types/dogs";
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import DogList from "@/components/DogList";
-
+import Spinner from "@/components/ui/spinner";
+import Filter from "@/components/Filter";
+import useFilterStore from "@/store/useFilterStore";
+import { Button } from "./ui/button";
 interface SearchProps {
   currentPage: number;
 }
@@ -21,7 +23,9 @@ interface SearchProps {
 export default function Search({ currentPage }: SearchProps) {
   const [dogs, setDogs] = useState<Dog[]>([]);
   const [totalPages, setTotalPages] = useState<number>(0);
-  const [size] = useState<number>(25);
+  const [loading, setLoading] = useState<boolean>(false);
+  const { breeds, minAge, maxAge } = useFilterStore();
+  const size = 25;
 
   useEffect(() => {
     searchDogs();
@@ -30,22 +34,36 @@ export default function Search({ currentPage }: SearchProps) {
   const searchDogs = async () => {
     try {
       const from = (currentPage - 1) * size;
+      const queryParams = new URLSearchParams();
+
+      queryParams.append("size", size.toString());
+      queryParams.append("from", from.toString());
+
+      if (breeds.length > 0) {
+        queryParams.append("breeds", breeds.join(","));
+      }
+      if (minAge > 0) {
+        queryParams.append("ageMin", minAge.toString());
+      }
+      if (maxAge > 0) {
+        queryParams.append("ageMax", maxAge.toString());
+      }
+
+      const url = `https://frontend-take-home-service.fetch.com/dogs/search?${queryParams.toString()}`;
+
+      setLoading(true);
+
       const searchResponse = await axios.get<{
         resultIds: string[];
         total: number;
         next: string;
         prev: string;
-      }>(
-        `https://frontend-take-home-service.fetch.com/dogs/search?size=${size}&from=${from}`,
-        {
-          withCredentials: true,
-        }
-      );
+      }>(url, {
+        withCredentials: true,
+      });
 
       const { resultIds, total } = searchResponse.data;
       setTotalPages(Math.ceil(total / size));
-
-      if (!resultIds?.length) return;
 
       const postResponse = await axios.post<Dog[]>(
         "https://frontend-take-home-service.fetch.com/dogs",
@@ -54,58 +72,61 @@ export default function Search({ currentPage }: SearchProps) {
       );
 
       setDogs(postResponse.data);
+      setLoading(false);
     } catch (error) {
       console.error("Error:", error);
     }
   };
 
+  if (loading) return <Spinner />;
   return (
-    <div className="flex flex-wrap gap-2 justify-center gap-y-5 mt-10 w-full mx-auto">
-      <DogList dogs={dogs} />
-      <div className="w-full flex justify-center mt-4 mb-10">
-        <Pagination>
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious
-                href={`/search/${currentPage - 1 > 0 ? currentPage - 1 : 1}`}
-              />
-            </PaginationItem>
-            {currentPage > 5 && (
-              <>
-                <PaginationItem>
-                  <PaginationLink href={`/search/1`}>1</PaginationLink>
-                </PaginationItem>
-                <PaginationEllipsis />
-              </>
-            )}
-
-            {[...Array(Math.min(5, totalPages))].map((_, i) => {
-              console.log("currentPage", currentPage, i);
-              return (
-                <PaginationItem key={i}>
-                  <PaginationLink
-                    href={`/search/${i + 1}`}
-                    isActive={currentPage === i + 1}
-                  >
-                    {i + 1}
-                  </PaginationLink>
-                </PaginationItem>
-              );
-            })}
-
-            {totalPages > 3 && <PaginationEllipsis />}
-            <PaginationItem>
-              <PaginationLink href={`/search/${totalPages}`}>
-                {totalPages}
-              </PaginationLink>
-            </PaginationItem>
-
-            <PaginationItem>
-              <PaginationNext href={`/search/${currentPage + 1}`} />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
+    <>
+      <div className="flex justify-center items-center gap-2 my-4">
+        <Filter />
+        <Button
+          variant="outline"
+          className="bg-blue-500 text-white"
+          onClick={searchDogs}
+        >
+          Search
+        </Button>
       </div>
-    </div>
+      <div className="flex flex-wrap gap-2 justify-center gap-y-5 mt-10 w-full mx-auto">
+        <DogList dogs={dogs} />
+        <div className="w-full flex justify-center mt-4 mb-10">
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  href={`/search/${Math.max(currentPage - 1, 1)}`}
+                />
+              </PaginationItem>
+
+              {[...Array(5)].map((_, i) => {
+                const pageNumber = currentPage - 2 + i;
+                if (pageNumber < 1 || pageNumber > totalPages) return null;
+
+                return (
+                  <PaginationItem key={pageNumber}>
+                    <PaginationLink
+                      href={`/search/${pageNumber}`}
+                      isActive={currentPage === pageNumber}
+                    >
+                      {pageNumber}
+                    </PaginationLink>
+                  </PaginationItem>
+                );
+              })}
+
+              <PaginationItem>
+                <PaginationNext
+                  href={`/search/${Math.min(currentPage + 1, totalPages)}`}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </div>
+      </div>
+    </>
   );
 }
