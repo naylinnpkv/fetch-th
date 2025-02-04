@@ -1,6 +1,6 @@
 "use client";
 
-import axios from "axios";
+import api from "@/lib/axios";
 import { useState, useEffect } from "react";
 import { Dog } from "@/types/dogs";
 import {
@@ -17,6 +17,7 @@ import Spinner from "@/components/ui/spinner";
 import Filter from "@/components/Filter";
 import useFilterStore from "@/store/useFilterStore";
 import { useRouter } from "next/navigation";
+import { AxiosError } from "axios";
 
 interface SearchProps {
   currentPage: number;
@@ -34,35 +35,27 @@ export default function Search({ currentPage }: SearchProps) {
     try {
       const from = (currentPage - 1) * size;
       const queryParams = buildQueryParams(size, from);
-      const url = `https://frontend-take-home-service.fetch.com/dogs/search?${queryParams.toString()}`;
 
       setLoading(true);
-      const searchResponse = await axios.get<{
+      const searchResponse = await api.get<{
         resultIds: string[];
         total: number;
         next: string;
         prev: string;
-      }>(url, {
-        withCredentials: true,
-      });
+      }>(`/dogs/search?${queryParams.toString()}`);
 
       const { resultIds, total } = searchResponse.data;
       setTotalPages(Math.ceil(total / size));
 
-      const postResponse = await axios.post<Dog[]>(
-        "https://frontend-take-home-service.fetch.com/dogs",
-        resultIds,
-        { withCredentials: true }
-      );
-
+      const postResponse = await api.post<Dog[]>("/dogs", resultIds);
       setDogs(postResponse.data);
-    } catch (error) {
-      if (axios.isAxiosError(error) && error.response) {
-        if (error.response.status === 401) {
+    } catch (error: unknown) {
+      if (error instanceof AxiosError) {
+        if (error.response?.status === 401) {
           router.push("/");
           toast.error("You must be logged in to access this page");
         } else {
-          console.error("Error fetching breeds:", error.response.data);
+          console.error("Error fetching breeds:");
         }
       } else {
         console.error("Unexpected error:", error);

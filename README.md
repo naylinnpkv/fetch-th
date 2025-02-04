@@ -1,36 +1,35 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Fetch Take Home Project
 
-## Getting Started
+## Tech Stack
 
-First, run the development server:
+### Frameworks and Libraries
+- **Next.js (TypeScript)**: for its out of the box features and server side rendering (ssr was not possible with the given api setup)
+- **Zustand**: State management for it's simplicity and ease of use
+- **React Hook Form and Yup Validation**: For managing form state and validation
+- **Shad UI**: Chosen for its compatibility with Tailwind CSS and customizability
+- **React Select**: For enhanced select components
+  
+## What Could Be Improved with More Time
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### Location-Based Filtering
+- Implement filtering based on the user's location preference
+- Integrate free-tier geolocation APIs (Here or Google) for:
+  - Location validation
+  - Easier access to user coordinates
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Test Coverage
+Implement testing to ensure:
+- useFilterStore updates correctly
+- Query parameters and the filter store work together as expected
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Testing Frameworks I would have used
+- **Vitest** and **React Testing Library** 
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Additional Features I would add
+- implement caching library such as react-query or swr to cache api responses
 
-## Learn More
 
-To learn more about Next.js, take a look at the following resources:
+### contact me at:
+- naylinn.pkv@gmail.com
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Thank you for the opportunity!

@@ -18,6 +18,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import api from "@/lib/axios";
 
 const Select = dynamic(() => import("react-select"), { ssr: false });
 
@@ -80,10 +81,7 @@ export default function Filter({ onSubmit }: FilterProps) {
     const fetchBreeds = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(
-          "https://frontend-take-home-service.fetch.com/dogs/breeds",
-          { withCredentials: true }
-        );
+        const response = await api.get("/dogs/breeds");
         setBreedOptions(
           response.data.map((breed: string) => ({
             label: breed,
