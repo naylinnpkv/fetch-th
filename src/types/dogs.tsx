@@ -4,4 +4,5 @@ export type Dog = {
   breed: string;
   age: number;
   img: string;
+  zip_code: string;
 };

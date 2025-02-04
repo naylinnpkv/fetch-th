@@ -56,6 +56,7 @@ export default function Filter({ onSubmit }: FilterProps) {
   const sortFieldOptions = [
     { label: "Breed", value: "breed" },
     { label: "Age", value: "age" },
+    { label: "Name", value: "name" },
   ];
   const { control, handleSubmit, watch } = useForm<FormValues>({
     defaultValues: {

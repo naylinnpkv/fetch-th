@@ -10,7 +10,7 @@ interface FilterStore {
   setBreeds: (breeds: string[]) => void;
   setMinAge: (minAge: number) => void;
   setMaxAge: (maxAge: number) => void;
-  setSortField: (sortField: "breed" | "age") => void;
+  setSortField: (sortField: "breed" | "age" | "name") => void;
   setSortOrder: (sortOrder: "asc" | "desc") => void;
 
   buildQueryParams: (size: number, from: number) => URLSearchParams;
@@ -33,18 +33,15 @@ const useFilterStore = create<FilterStore>()((set, get) => ({
     const { breeds, minAge, maxAge, sortField, sortOrder } = get();
     const queryParams = new URLSearchParams();
 
-    // Add pagination params
     queryParams.append("size", size.toString());
     queryParams.append("from", from.toString());
 
-    // Add breed filters
     if (breeds.length > 0) {
       breeds.forEach((breed) => {
         queryParams.append("breeds", breed);
       });
     }
 
-    // Add age filters
     if (minAge > 0) {
       queryParams.append("ageMin", minAge.toString());
     }
@@ -52,7 +49,6 @@ const useFilterStore = create<FilterStore>()((set, get) => ({
       queryParams.append("ageMax", maxAge.toString());
     }
 
-    // Add sorting
     queryParams.append("sort", `${sortField}:${sortOrder}`);
 
     return queryParams;
