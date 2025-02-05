@@ -8,6 +8,7 @@ import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Filter as FilterIcon } from "lucide-react";
+import { RotateCcw } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "./ui/button";
@@ -16,6 +17,7 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
+  SheetDescription,
   SheetTrigger,
 } from "@/components/ui/sheet";
 import api from "@/lib/axios";
@@ -59,7 +61,7 @@ export default function Filter({ onSubmit }: FilterProps) {
     { label: "Age", value: "age" },
     { label: "Name", value: "name" },
   ];
-  const { control, handleSubmit, watch } = useForm<FormValues>({
+  const { control, handleSubmit } = useForm<FormValues>({
     defaultValues: {
       breeds: currentBreeds.map((breed) => ({
         label: breed,
@@ -73,9 +75,6 @@ export default function Filter({ onSubmit }: FilterProps) {
       sortOrder: currentSortOrder,
     },
   });
-
-  const formValues = watch();
-  console.log("Form values:", formValues);
 
   useEffect(() => {
     const fetchBreeds = async () => {
@@ -124,6 +123,25 @@ export default function Filter({ onSubmit }: FilterProps) {
       <SheetContent>
         <SheetHeader>
           <SheetTitle>Filter</SheetTitle>
+          <SheetDescription className="flex flex-col gap-2 items-start">
+            Filter the dogs by breed, age, and sort order.
+            <Button
+              variant="ghost"
+              size="sm"
+              className="mt-2 text-gray-500 self-end mb-2"
+              onClick={() => {
+                setBreeds([]);
+                setMinAge(0);
+                setMaxAge(0);
+                setSortField("breed");
+                setSortOrder("asc");
+                onSubmit();
+              }}
+            >
+              <RotateCcw />
+              Reset All
+            </Button>
+          </SheetDescription>
           <form
             onSubmit={handleSubmit(handleFilterSubmit)}
             className="space-y-4"
